@@ -1,12 +1,8 @@
-import csv
 import random
 from math import *
 import numpy as np
 from robot import *
 from particle import *
-import matplotlib.pyplot as plt
-from matplotlib.pyplot import plot
-from matplotlib import pyplot as plt1
 
 class partile_filter():
     def __init__(self, target, pt_number, landmarks, gps_error):
@@ -14,8 +10,8 @@ class partile_filter():
         self.landmarks = landmarks
         self.pt_number = pt_number
         self.gps_error = gps_error
-        self.x = 0.0
-        self.y = 0.0
+        # self.x = 0.0
+        # self.y = 0.0
         self.pts = []
         self.residual = []
         for i in range(pt_number):
@@ -24,14 +20,16 @@ class partile_filter():
             self.pts.append(pt)
     
     def filter(self, turn, forward, z):
-        
+        # prediction step
         for i in range(self.pt_number):
             self.pts[i] = self.pts[i].move(turn,forward)
 
+        # update step
         w = []
         for i in range(self.pt_number):
             w.append(self.pts[i].measurement_prob(z, self.landmarks))
         
+        # resample step
         p3 = []
         X = []
         Y = []
@@ -58,7 +56,8 @@ class partile_filter():
 
     def eval(self):
         sum = 0.0
-        for i in range(len(self.pts)): # calculate mean error
+         # calculate mean error
+        for i in range(len(self.pts)):
             dx = (self.pts[i].x - self.target.x + (self.target.world_size/2.0)) % self.target.world_size - (self.target.world_size/2.0)
             dy = (self.pts[i].y - self.target.y + (self.target.world_size/2.0)) % self.target.world_size - (self.target.world_size/2.0)
             err = sqrt(dx * dx + dy * dy)

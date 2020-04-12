@@ -5,15 +5,14 @@ class extended_kalman_filter(object):
     def __init__(self,F, P, R, dt):
         self.F = F
         self.P = P
-        self.Q = self.setQ(dt)
         self.R = R
+        self.Q = self.setQ(dt)
         self.update_rx = []
         self.update_ry = []
         self.predict_rx = []
         self.predict_ry = [] 
         
     def filter(self,x, P, rzs_polar):
-        # for n in range(2):
         for n in range(len(rzs_polar)):
             #predict
             x = self.F * x # + u

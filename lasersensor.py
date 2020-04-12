@@ -2,8 +2,6 @@ from numpy.random import randn
 import random
 from math import *
 class lasersensor():
-    # zsx = []
-    # zsy = []
     def __init__(self, x_std = 0.15, y_std = 0.15):
         self.x_std = x_std
         self.y_std = y_std

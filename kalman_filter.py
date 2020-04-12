@@ -5,16 +5,15 @@ class kalman_filter(object):
         self.F = F
         self.H = H
         self.P = P
-        self.Q = self.setQ(dt)
         self.R = R 
+        self.Q = self.setQ(dt)
         self.update_lx = []
         self.update_ly = []
         self.predict_lx = []
         self.predict_ly = []
         
     def filter(self,x, P, lzs):
-        for n in range(len(lzs)):
-            
+        for n in range(len(lzs)):          
             # prediction
             x = self.F * x 
             P = self.F * P * self.F.T + self.Q
@@ -44,27 +43,7 @@ class kalman_filter(object):
 
         return x, P
     
-    def setQ(self,dt):
-        dt2 = dt * dt
-        dt3 = dt * dt2
-        dt4 = dt * dt3
 
-        sig_x = 9
-        sig_y = 9
-        r11 = dt4 * sig_x / 4
-        r13 = dt3 * sig_x / 2
-        r22 = dt4 * sig_y / 4
-        r24 = dt3 * sig_y /  2
-        r31 = dt3 * sig_x / 2 
-        r33 = dt2 * sig_x
-        r42 = dt3 * sig_y / 2
-        r44 = dt2 * sig_y
-
-        Q = np.matrix([[r11, 0, r13, 0],
-                        [0, r22, 0, r24],
-                        [r31, 0, r33, 0], 
-                        [0, r42, 0, r44]], dtype='float')
-        return Q
     
     def fusion(self,x, P, z):
             # prediction
@@ -92,3 +71,25 @@ class kalman_filter(object):
             self.update_ly.append(x[1, 0])
             
             return x, P
+        
+    def setQ(self,dt):
+        dt2 = dt * dt
+        dt3 = dt * dt2
+        dt4 = dt * dt3
+
+        sig_x = 9
+        sig_y = 9
+        r11 = dt4 * sig_x / 4
+        r13 = dt3 * sig_x / 2
+        r22 = dt4 * sig_y / 4
+        r24 = dt3 * sig_y /  2
+        r31 = dt3 * sig_x / 2 
+        r33 = dt2 * sig_x
+        r42 = dt3 * sig_y / 2
+        r44 = dt2 * sig_y
+
+        Q = np.matrix([[r11, 0, r13, 0],
+                        [0, r22, 0, r24],
+                        [r31, 0, r33, 0], 
+                        [0, r42, 0, r44]], dtype='float')
+        return Q

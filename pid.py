@@ -89,9 +89,7 @@ def pid_steer(target, car, params, dt, x, P, n = 100, speed = 0.5):
 landmarks  = [[20.0, 20.0], [80.0, 80.0], [20.0, 80.0], [80.0, 20.0]]  
 world_size = 100
 target = robot(world_size)
-target.set(1.0,1.0,0)
-# p = [3.0, 5.3, 0.012]
-# p = [30.0, 5000, 0.001]
+target.set(1.0, 1.0, 0)
 p = [0.006362685441135942, 1.0118527900307346, 0.0]
 car = Car(landmarks)
 car.set(0.0 ,0.0, 0.0)

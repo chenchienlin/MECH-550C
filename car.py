@@ -14,16 +14,11 @@ from particle_filter import *
 
 class Car(object):
     def __init__(self, landmarks, length=20.0, localizer = True, pt_number = 10000, gps_error = 10, world_size = 100):
-        """
-        Creates robot and initializes location/orientation to 0, 0, 0.
-        """
         self.x = 0.0
         self.y = 0.0
-        self.res = 0.0
         self.orientation = 0.0
         self.landmarks = landmarks
         self.length = length
-        self.sense_noise  = 0.0
         self.steering_noise = 0.0
         self.distance_noise = 0.0
         self.steering_drift = 0.0
@@ -32,6 +27,7 @@ class Car(object):
         self.world_size = world_size
         self.lsensor = lasersensor()
         self.rsensor = radarsensor()
+        
         if localizer == True:
             self.localizer = partile_filter(self, pt_number, landmarks, gps_error)
         else:
@@ -82,24 +78,27 @@ class Car(object):
             self.y += distance2 * np.sin(self.orientation)
             self.orientation = (self.orientation + act_turn) % (2.0 * np.pi)
         else:
-            # approximate bicycle model for motion
+            # approximate simple motion model
             radius = distance2 / act_turn
             cx = self.x - (np.sin(self.orientation) * radius)
             cy = self.y + (np.cos(self.orientation) * radius)
             self.orientation = (self.orientation + act_turn) % (2.0 * np.pi)
             self.x = cx + (np.sin(self.orientation) * radius)
             self.y = cy - (np.cos(self.orientation) * radius)
+            
+        if self.localizer != None:
+            # measure the landmarks distance
+            Z = self.sense()
         
-        Z = self.sense()
-        self.localizer.filter(des_turn, distance,Z)
+            # localization process 
+            self.localizer.filter(des_turn, distance,Z)
         
     def sense(self):
-        Z2 = []
+        Z = []
         for i in range(len(self.landmarks)):
             dist = self.lsensor.measure_landmark(self, self.landmarks[i])
-            Z2.append(dist)
+            Z.append(dist)
+        return Z
     
-    
-        return Z2
     def __repr__(self):
         return '[x=%.5f y=%.5f orient=%.5f]' % (self.x, self.y, self.orientation)
